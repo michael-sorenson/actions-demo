@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html ng-app="octoapp">
+  <head>
+    <style>
+
+    </style>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+
+    <link rel='stylesheet' href='/public/stylesheets/style.css' />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-messages.js"></script>
+    <script type="text/javascript" src="/public/js/angular-app.js"></script>
+
+    <script type="text/javascript" src="/public/js/header.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body ng-controller="octoController">
+    <div class="container-fluid">
+
+      <% include header %>
+
+<% if( !user ) { %>
+      <div class="row">
+        <div class="col-md-6 appGroup">
+          <h2>Welcome!</h2>
+          <p>Please <a href="/login">login</a>.</p>
+        </div>
+      </div>
+<% } else { %>
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="stackdriver">
+            <button name="tripLogButton" ng-model="tripLogButton" ng-click="tripLog()" class="btn btn-primary">Trigger GCP Log Entry <span class="glyphicon glyphicon-th-list"></span></button>
+            <br></br>
+            <div ng-messages="triggers.tripLog" role="alert">
+              <div ng-message="submitted">Successfully logged to GCP</div>
+              <div ng-message="error">Error logging to GCP</div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/stackdriver-logo.png" height="40" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="Stackdriver" oncalldata="oncallData['Stackdriver']"></on-call>
+        </div>
+
+      </div>
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="appdynamics">
+            <button name="tripAppDButton" ng-model="tripAppDButton" ng-click="tripAppD()" class="btn btn-primary">Trigger AppDynamics Error <span class="glyphicon glyphicon-console"></span></button>
+            <br></br>
+            <div ng-messages="triggers.tripAppD" role="alert">
+              <div ng-message="submitted">Successfully sent Error to AppDynamics</div>
+              <div ng-message="error">Error sending error to AppDynamics</div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/appdynamics-logo.png" height="25" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="AppDynamics" oncalldata="oncallData['AppDynamics']"></on-call>
+        </div>
+
+      </div>
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="dynatrace">
+            <button name="tripDynatraceButton" ng-model="tripDynatraceButton" ng-click="tripDynatrace()" class="btn btn-primary">Trigger Stacktrace <span class="glyphicon glyphicon-console"></span></button>
+            <br></br>
+            <div ng-messages="triggers.tripDynatrace" role="alert">
+              <div ng-message="submitted">Successfully wrote stack trace to ./logs/dynatracer.log</div>
+              <div ng-message="error">Error writing stack trace</div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/dynatrace-logo.png" height="50" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="Dynatrace" oncalldata="oncallData['Dynatrace']"></on-call>
+        </div>
+
+      </div>
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="stacktrace">
+            <button name="tripStacktraceButton" ng-model="tripStacktraceButton" ng-click="tripStacktrace()" class="btn btn-primary">Trigger Stacktrace <span class="glyphicon glyphicon-console"></span></button>
+            <br></br>
+            <div ng-messages="triggers.tripStacktrace" role="alert">
+              <div ng-message="submitted">Successfully wrote stack trace to ./logs/stacktrace.log</div>
+              <div ng-message="error">Error writing stack trace</div>
+            </div>
+          </form>
+        </div>
+
+
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/splunk-logo.png" height="40" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="Splunk" oncalldata="oncallData['Splunk']"></on-call>
+        </div>
+
+
+      </div>
+
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="cloudwatch">
+            <button name="tripCloudwatchButton" ng-model="tripCloudwatchButton" ng-click="tripCloudwatch()" class="btn btn-primary">Trigger Lambda <span class="glyphicon glyphicon-console"></span></button>
+            <br></br>
+            <div ng-messages="triggers.tripCloudwatch" role="alert">
+              <div ng-message="submitted">Successfully wrote to lambda function</div>
+              <div ng-message="error">Error writing to lambda function</div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/cloudwatch-logo.png" height="50" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="Cloudwatch" oncalldata="oncallData['Cloudwatch']"></on-call>
+        </div>
+
+      </div>
+
+
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="moogsoft">
+            <button name="tripMoogsoftButton" ng-model="tripMoogsoftButton" ng-click="tripMoogsoft()" class="btn btn-primary">Create Alert <img src="/public/img/moogsoft-icon.png" alt="Mooooo" height="20" width="20"></button>
+            <br></br>
+            <div ng-messages="triggers.tripMoogsoft" role="alert">
+              <div ng-message="submitted">Successfully created Alert</div>
+              <div ng-message="error">Error creating Alert</div>
+            </div>
+          </form>
+        </div>
+
+
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/moogsoft-logo.png" height="40" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="Moogsoft" oncalldata="oncallData['Moogsoft']"></on-call>
+        </div>
+
+      </div>
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="stacktrace">
+            <button name="tripBigPandaButton" ng-model="tripBigPandaButton" ng-click="tripBigPanda()" class="btn btn-primary">Trigger Alert <span class="glyphicon glyphicon-alert"></span></button>
+            <br></br>
+            <div ng-messages="triggers.tripBigPanda" role="alert">
+              <div ng-message="submitted">Successfully created Alert</div>
+              <div ng-message="error">Error creating Alert</div>
+            </div>
+          </form>
+        </div>
+
+
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/bigpanda-logo.png" height="40" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="BigPanda" oncalldata="oncallData['BigPanda']"></on-call>
+        </div>
+
+
+      </div>
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+
+          <form name="cpuspike" class="form-inline">
+            <div class="form-group">
+              <button name="cpuspikebutton" ng-model="cpuspikebutton" ng-click="spikeCPU()" class="btn btn-primary">CPU Spike <span class="glyphicon glyphicon-equalizer"></span></button>
+            </div>
+            <br></br>
+            <div ng-messages="triggers.spikeCPU" role="alert">
+              <div ng-message="submitted">Starting spike for {{spikeCPUseconds}} seconds</div>
+              <div ng-message="finished">Finished spike</div>
+              <div ng-message="error">Error spiking CPU</div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/solarwinds-server-application-monitor.png" height="50" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="SolarWinds" oncalldata="oncallData['SolarWinds']"></on-call>
+        </div>
+
+      </div>
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="flood-control">
+              <button name="triggerFlood" ng-model="triggerFlood" ng-click="triggerFlood()" class="btn btn-primary">Trigger Event Flood <img src="/public/img/flood-logo.png" alt="Ahhhhhh!" height="20" width="20"></button>
+              <input type="number" id="numEventsInput" name="numEventsInput" ng-model="num_events" min="3" max="100"> events
+            <br></br>
+            <div ng-messages="triggers.triggerFlood" role="alert">
+              <div ng-message="submitted">Successfully launched flood</div>
+              <div ng-message="error">Error launching flood</div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/xmatters.png" height="40" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="TriggerFlood" oncalldata="oncallData['TriggerFlood']"></on-call>
+        </div>
+
+      </div>
+
+      <!--
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="errorform">
+            <button name="errorbutton" ng-model="errorbutton" ng-click="makeerror()" class="btn btn-primary">Throw Error <span class="glyphicon glyphicon-alert"></span></button>
+            <br></br>
+            <div ng-messages="triggers.makeError" role="alert">
+              <div ng-message="submitted">Made ink!</div>
+              <div ng-message="finished">Bad happened</div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/NewRelic-logo-bug.png" height="35" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="New Relic" oncalldata="oncallData['New Relic']"></on-call>
+        </div>
+
+
+      </div>
+      -->
+
+      <div class="row appGroup">
+        <div class="col-md-3 cellBorder">
+          <form name="makemetricsform">
+            <button name="makemetricsbutton" ng-model="makemetricsbutton" ng-click="makeMetrics( 40 )" class="btn btn-primary">Set Metric: 40</button>
+            <button name="makemetricsbutton" ng-model="makemetricsbutton" ng-click="makeMetrics( 20 )" class="btn btn-primary">Set Metric: 20</button>
+            <div ng-messages="triggers.makeMetrics" role="alert">
+              <div ng-message="submitted">Set metric to {{ value }}</div>
+              <div ng-message="error">Error moving someMetric. Is Prometheus up?</div>
+            </div>
+          </form>
+          <a href="/metrics">See Metrics</a>
+        </div>
+        <div class="col-md-3 cellBorder">
+          <img src="/public/img/prometheus-logo.png" height="50" align="left">
+        </div>
+
+        <div class="col-md-3 cellBorder">
+          <on-call product="Prometheus" oncalldata="oncallData['Prometheus']"></on-call>
+        </div>
+
+      </div>
+
+      <% } %>
+    </div>
+  </body>
+</html>
